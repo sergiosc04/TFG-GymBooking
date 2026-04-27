@@ -4,7 +4,6 @@ import { requireAuth } from '../middleware/auth';
 
 const router = Router();
 
-// GET /api/bookings
 router.get('/', requireAuth, async (req, res) => {
   const userId = (req as any).user.id;
   const { data, error } = await supabase
@@ -17,7 +16,6 @@ router.get('/', requireAuth, async (req, res) => {
   res.json(data);
 });
 
-// POST /api/bookings
 router.post('/', requireAuth, async (req, res) => {
   const userId = (req as any).user.id;
   const { horario_id, fecha_reserva } = req.body;
@@ -32,7 +30,6 @@ router.post('/', requireAuth, async (req, res) => {
   res.status(201).json({ reserva_id: data });
 });
 
-// PATCH /api/bookings/:id/cancelar
 router.patch('/:id/cancelar', requireAuth, async (req, res) => {
   const { id } = req.params;
   const userId = (req as any).user.id;

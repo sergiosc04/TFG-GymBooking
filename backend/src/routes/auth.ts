@@ -3,7 +3,6 @@ import { supabase } from '../supabaseClient';
 
 const router = Router();
 
-// POST /api/auth/register
 router.post('/register', async (req, res) => {
   const { email, password, nombre_completo, telefono } = req.body;
 
@@ -14,19 +13,22 @@ router.post('/register', async (req, res) => {
 
   if (error) return res.status(400).json({ error: error.message });
 
-  // Crear perfil en la tabla profiles
   if (data.user) {
-    await supabase.from('profiles').insert({
+    const { error: profileError } = await supabase.from('perfiles').insert({
       id: data.user.id,
       nombre_completo,
       telefono,
     });
+
+    if (profileError) {
+      console.log('Error al crear perfil:', profileError);
+      return res.status(500).json({ error: profileError.message });
+    }
   }
 
   res.status(201).json({ user: data.user, session: data.session });
 });
 
-// POST /api/auth/login
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -36,7 +38,6 @@ router.post('/login', async (req, res) => {
   });
 
   if (error) return res.status(400).json({ error: error.message });
-
   res.json({ user: data.user, session: data.session });
 });
 
