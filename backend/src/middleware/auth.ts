@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { supabase } from '../supabaseClient.js';
+import { supabase } from '../supabaseClient';
 
 export async function requireAuth(req: Request, res: Response, next: NextFunction) {
   const token = req.headers.authorization?.replace('Bearer ', '');
