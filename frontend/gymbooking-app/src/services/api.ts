@@ -37,11 +37,7 @@ async function request(endpoint: string, options: RequestInit = {}) {
   const res = await fetch(`${API_URL}${endpoint}`, {
     ...options,
     headers: {
-<<<<<<< HEAD
-      'Content-Type': 'application/json',
-=======
       "Content-Type": "application/json",
->>>>>>> origin/main
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
@@ -49,48 +45,12 @@ async function request(endpoint: string, options: RequestInit = {}) {
 
   if (!res.ok) {
     const error = await res.json();
-<<<<<<< HEAD
-    throw new Error(error.error || 'Error del servidor');
-=======
     throw new Error(error.error || "Error del servidor");
->>>>>>> origin/main
   }
   return res.json();
 }
 
 export const api = {
-<<<<<<< HEAD
-  // Auth
-  register: (email: string, password: string, nombre_completo: string, telefono: string) =>
-    request('/auth/register', {
-      method: 'POST',
-      body: JSON.stringify({ email, password, nombre_completo, telefono }),
-    }),
-
-  login: (email: string, password: string) =>
-    request('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-    }),
-
-  // Clases
-  getClasses: () => request('/classes'),
-
-  getHorarios: (claseId: string) => request(`/classes/${claseId}/horarios`),
-
-  // Reservas
-  getMyBookings: () => request('/bookings'),
-
-  createBooking: (horarioId: string, fecha: string) =>
-    request('/bookings', {
-      method: 'POST',
-      body: JSON.stringify({ horario_id: horarioId, fecha_reserva: fecha }),
-    }),
-
-  cancelBooking: (reservaId: string) =>
-    request(`/bookings/${reservaId}/cancelar`, { method: 'PATCH' }),
-};
-=======
   // Clases
   getClasses: () => request("/classes"),
   getClassDetail: (id: string) => request(`/classes/${id}`),
@@ -110,4 +70,3 @@ export const api = {
       method: "PATCH",
     }),
 };
->>>>>>> origin/main
