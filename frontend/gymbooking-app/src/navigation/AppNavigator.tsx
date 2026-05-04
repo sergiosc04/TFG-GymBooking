@@ -14,7 +14,7 @@ export default function AppNavigator() {
 
   if (isLoggedIn === null) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F7F8FA' }}>
         <ActivityIndicator size="large" color="#1D74F2" />
       </View>
     );
@@ -28,7 +28,10 @@ export default function AppNavigator() {
           <RootStack.Screen
             name="ClassDetail"
             component={ClassDetailScreen}
-            options={{ headerShown: true, title: 'Detalle de clase' }}
+            options={{
+              headerShown: false,
+              presentation: 'card',
+            }}
           />
         </RootStack.Navigator>
       ) : (
