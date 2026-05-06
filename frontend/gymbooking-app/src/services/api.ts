@@ -1,9 +1,23 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 
-const API_URL = 'http://192.168.1.45:3000/api';
-// Emulador Android: http://10.0.2.2:3000/api
-// Expo Go en móvil físico: http://TU_IP_LOCAL:3000/api
-// Navegador web: http://localhost:3000/api
+function getApiUrl() {
+  if (Platform.OS === 'web') {
+    return 'http://localhost:3000/api';
+  }
+
+  const debuggerHost = Constants.expoConfig?.hostUri || Constants.manifest2?.extra?.expoGo?.debuggerHost;
+  const ip = debuggerHost?.split(':')[0];
+
+  if (ip) {
+    return `http://${ip}:3000/api`;
+  }
+
+  return 'http://localhost:3000/api';
+}
+
+const API_URL = getApiUrl();
 
 async function getStoredToken(): Promise<string | null> {
   return await AsyncStorage.getItem('token');
