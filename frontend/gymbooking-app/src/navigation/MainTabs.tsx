@@ -1,5 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { FontAwesome5 } from '@expo/vector-icons';
 import HomeScreen from '../screens/HomeScreen';
 import ClassesScreen from '../screens/ClassesScreen';
 import BookingsScreen from '../screens/BookingsScreen';
@@ -14,12 +15,6 @@ export default function MainTabs() {
         headerShown: false,
         tabBarActiveTintColor: '#1D74F2',
         tabBarInactiveTintColor: '#9CA3AF',
-        tabBarStyle: {
-          height: 80,
-          paddingBottom: 20,
-          paddingTop: 8,
-          borderTopColor: '#E5E7EB',
-        },
         tabBarLabelStyle: {
           fontSize: 11,
           fontWeight: '500',
@@ -29,22 +24,38 @@ export default function MainTabs() {
       <Tab.Screen
         name="Inicio"
         component={HomeScreen}
-        options={{ tabBarLabel: 'Inicio' }}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="home" size={size} color={color} />
+          ),
+        }}
       />
       <Tab.Screen
         name="Clases"
         component={ClassesScreen}
-        options={{ tabBarLabel: 'Clases' }}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="dumbbell" size={size} color={color} />
+          ),
+        }}
       />
       <Tab.Screen
         name="Reservas"
         component={BookingsScreen}
-        options={{ tabBarLabel: 'Reservas' }}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="calendar-check" size={size} color={color} />
+          ),
+        }}
       />
       <Tab.Screen
         name="Perfil"
         component={ProfileScreen}
-        options={{ tabBarLabel: 'Perfil' }}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="user" size={size} color={color} />
+          ),
+        }}
       />
     </Tab.Navigator>
   );

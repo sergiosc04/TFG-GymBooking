@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
   ActivityIndicator, Alert, Platform,
@@ -12,6 +13,7 @@ export default function ClassDetailScreen({ route, navigation }: any) {
   const [clase, setClase] = useState<Clase | null>(null);
   const [loading, setLoading] = useState(true);
   const [booking, setBooking] = useState(false);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     cargarClase();
@@ -30,10 +32,23 @@ export default function ClassDetailScreen({ route, navigation }: any) {
     }
   };
 
-  const handleReservar = () => {
-    // Usar la fecha de hoy como default
-    const hoy = new Date().toISOString().split('T')[0];
+  const handleReservar = async () => {
+  const hoy = new Date().toISOString().split('T')[0];
 
+  if (Platform.OS === 'web') {
+    const confirmar = window.confirm(`¿Reservar ${clase?.nombre} para hoy (${hoy})?`);
+    if (!confirmar) return;
+
+    setBooking(true);
+    try {
+      await api.createBooking(claseId, hoy);
+      window.alert('✓ Reserva confirmada');
+    } catch (error: any) {
+      window.alert('Error: ' + (error.message || 'No se pudo reservar'));
+    } finally {
+      setBooking(false);
+    }
+  } else {
     Alert.alert(
       'Confirmar reserva',
       `¿Reservar ${clase?.nombre} para hoy (${hoy})?`,
@@ -55,7 +70,8 @@ export default function ClassDetailScreen({ route, navigation }: any) {
         },
       ]
     );
-  };
+  }
+};
 
   if (loading) {
     return (
@@ -122,7 +138,7 @@ export default function ClassDetailScreen({ route, navigation }: any) {
       </ScrollView>
 
       {/* Botón fijo abajo */}
-      <View style={styles.botonContainer}>
+      <View style={[styles.botonContainer, { paddingBottom: Math.max(insets.bottom, 16) }]}>
         <TouchableOpacity
           style={[styles.botonReservar, booking && { opacity: 0.6 }]}
           onPress={handleReservar}
@@ -240,7 +256,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     padding: 16,
-    paddingBottom: Platform.OS === 'ios' ? 34 : 16,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',

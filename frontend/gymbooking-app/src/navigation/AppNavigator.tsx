@@ -5,6 +5,10 @@ import { useAuth } from '../hooks/useAuth';
 import AuthStack from './AuthStack';
 import MainTabs from './MainTabs';
 import ClassDetailScreen from '../screens/ClassDetailScreen';
+import PersonalDataScreen from '../screens/PersonalDataScreen';
+import ChangePasswordScreen from '../screens/ChangePasswordScreen';
+import NotificationsScreen from '../screens/NotificationsScreen';
+import InfoScreen from '../screens/InfoScreen';
 import { ActivityIndicator, View } from 'react-native';
 
 const RootStack = createNativeStackNavigator();
@@ -25,14 +29,11 @@ export default function AppNavigator() {
       {isLoggedIn ? (
         <RootStack.Navigator screenOptions={{ headerShown: false }}>
           <RootStack.Screen name="MainTabs" component={MainTabs} />
-          <RootStack.Screen
-            name="ClassDetail"
-            component={ClassDetailScreen}
-            options={{
-              headerShown: false,
-              presentation: 'card',
-            }}
-          />
+          <RootStack.Screen name="ClassDetail" component={ClassDetailScreen} />
+          <RootStack.Screen name="PersonalData" component={PersonalDataScreen} />
+          <RootStack.Screen name="ChangePassword" component={ChangePasswordScreen} />
+          <RootStack.Screen name="Notifications" component={NotificationsScreen} />
+          <RootStack.Screen name="Info" component={InfoScreen} />
         </RootStack.Navigator>
       ) : (
         <AuthStack />

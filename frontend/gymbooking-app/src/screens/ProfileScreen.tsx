@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { FontAwesome5 } from '@expo/vector-icons';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert,
 } from 'react-native';
@@ -6,7 +7,7 @@ import { useAuth } from '../hooks/useAuth';
 import { api } from '../services/api';
 import { Reserva } from '../types';
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }: any) {
   const { userName, userEmail, logout } = useAuth();
   const [totalReservas, setTotalReservas] = useState(0);
 
@@ -69,51 +70,51 @@ export default function ProfileScreen() {
         </View>
       </View>
 
-      {/* Sección Cuenta */}
+            {/* Sección Cuenta */}
       <Text style={styles.seccionTitulo}>CUENTA</Text>
       <View style={styles.opcionesContainer}>
-        <TouchableOpacity style={styles.opcion}>
-          <Text style={styles.opcionIcono}>👤</Text>
+        <TouchableOpacity style={styles.opcion} onPress={() => navigation.navigate('PersonalData')}>
+          <FontAwesome5 name="user-edit" size={18} color="#6B7280" style={styles.opcionIcono} />
           <Text style={styles.opcionTexto}>Datos personales</Text>
-          <Text style={styles.opcionChevron}>›</Text>
+          <FontAwesome5 name="chevron-right" size={14} color="#9CA3AF" />
         </TouchableOpacity>
         <View style={styles.separador} />
-        <TouchableOpacity style={styles.opcion}>
-          <Text style={styles.opcionIcono}>🔒</Text>
+        <TouchableOpacity style={styles.opcion} onPress={() => navigation.navigate('ChangePassword')}>
+          <FontAwesome5 name="lock" size={18} color="#6B7280" style={styles.opcionIcono} />
           <Text style={styles.opcionTexto}>Cambiar contraseña</Text>
-          <Text style={styles.opcionChevron}>›</Text>
+          <FontAwesome5 name="chevron-right" size={14} color="#9CA3AF" />
         </TouchableOpacity>
         <View style={styles.separador} />
-        <TouchableOpacity style={styles.opcion}>
-          <Text style={styles.opcionIcono}>🔔</Text>
+        <TouchableOpacity style={styles.opcion} onPress={() => navigation.navigate('Notifications')}>
+          <FontAwesome5 name="bell" size={18} color="#6B7280" style={styles.opcionIcono} />
           <Text style={styles.opcionTexto}>Notificaciones</Text>
-          <Text style={styles.opcionChevron}>›</Text>
+          <FontAwesome5 name="chevron-right" size={14} color="#9CA3AF" />
         </TouchableOpacity>
       </View>
 
       {/* Sección Sobre */}
       <Text style={styles.seccionTitulo}>SOBRE LA APP</Text>
       <View style={styles.opcionesContainer}>
-        <TouchableOpacity style={styles.opcion}>
-          <Text style={styles.opcionIcono}>📄</Text>
+        <TouchableOpacity style={styles.opcion} onPress={() => navigation.navigate('Info', { tipo: 'terminos' })}>
+          <FontAwesome5 name="file-contract" size={18} color="#6B7280" style={styles.opcionIcono} />
           <Text style={styles.opcionTexto}>Términos y condiciones</Text>
-          <Text style={styles.opcionChevron}>›</Text>
+          <FontAwesome5 name="chevron-right" size={14} color="#9CA3AF" />
         </TouchableOpacity>
         <View style={styles.separador} />
-        <TouchableOpacity style={styles.opcion}>
-          <Text style={styles.opcionIcono}>🔐</Text>
+        <TouchableOpacity style={styles.opcion} onPress={() => navigation.navigate('Info', { tipo: 'privacidad' })}>
+          <FontAwesome5 name="shield-alt" size={18} color="#6B7280" style={styles.opcionIcono} />
           <Text style={styles.opcionTexto}>Política de privacidad</Text>
-          <Text style={styles.opcionChevron}>›</Text>
+          <FontAwesome5 name="chevron-right" size={14} color="#9CA3AF" />
         </TouchableOpacity>
         <View style={styles.separador} />
-        <TouchableOpacity style={styles.opcion}>
-          <Text style={styles.opcionIcono}>❓</Text>
+        <TouchableOpacity style={styles.opcion} onPress={() => navigation.navigate('Info', { tipo: 'ayuda' })}>
+          <FontAwesome5 name="question-circle" size={18} color="#6B7280" style={styles.opcionIcono} />
           <Text style={styles.opcionTexto}>Ayuda y soporte</Text>
-          <Text style={styles.opcionChevron}>›</Text>
+          <FontAwesome5 name="chevron-right" size={14} color="#9CA3AF" />
         </TouchableOpacity>
         <View style={styles.separador} />
         <View style={styles.opcion}>
-          <Text style={styles.opcionIcono}>ℹ️</Text>
+          <FontAwesome5 name="info-circle" size={18} color="#6B7280" style={styles.opcionIcono} />
           <Text style={styles.opcionTexto}>Versión 1.0</Text>
         </View>
       </View>
@@ -211,8 +212,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   opcionIcono: {
-    fontSize: 18,
-    marginRight: 12,
+  width: 24,
+  textAlign: 'center',
+  marginRight: 12,
   },
   opcionTexto: {
     flex: 1,

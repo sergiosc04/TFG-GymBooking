@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { FontAwesome5 } from '@expo/vector-icons';
 import {
   View, Text, StyleSheet, FlatList, TouchableOpacity,
   ActivityIndicator, RefreshControl,
@@ -62,7 +63,9 @@ export default function HomeScreen({ navigation }: any) {
       <View style={styles.header}>
         <View>
           <Text style={styles.saludoGris}>Hola,</Text>
-          <Text style={styles.saludoNombre}>{primerNombre} 👋</Text>
+          <Text style={styles.saludoNombre}>
+            {primerNombre}
+          </Text>
         </View>
         <TouchableOpacity
           style={styles.avatar}

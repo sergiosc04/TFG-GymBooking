@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { FontAwesome5 } from '@expo/vector-icons';
 import {
   View, Text, StyleSheet, FlatList, RefreshControl, ActivityIndicator,
 } from 'react-native';
@@ -64,7 +65,7 @@ export default function ClassesScreen({ navigation }: any) {
         }
         ListEmptyComponent={
           <View style={styles.emptyState}>
-            <Text style={styles.emptyIcon}>📋</Text>
+            <FontAwesome5 name="clipboard-list" size={48} color="#9CA3AF" style={{ marginBottom: 16 }} />
             <Text style={styles.emptyTitle}>No hay clases disponibles</Text>
             <Text style={styles.emptySubtitle}>Vuelve más tarde para ver las clases programadas</Text>
           </View>

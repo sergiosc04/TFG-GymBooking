@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'http://192.168.1.45:3000/api';
 // Emulador Android: http://10.0.2.2:3000/api
 // Expo Go en móvil físico: http://TU_IP_LOCAL:3000/api
 // Navegador web: http://localhost:3000/api

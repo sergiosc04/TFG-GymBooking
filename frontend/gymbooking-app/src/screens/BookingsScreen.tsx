@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { FontAwesome5 } from '@expo/vector-icons';
 import {
   View, Text, StyleSheet, FlatList, TouchableOpacity,
   ActivityIndicator, RefreshControl, Alert,
@@ -115,7 +116,12 @@ export default function BookingsScreen({ navigation }: any) {
         }
         ListEmptyComponent={
           <View style={styles.emptyState}>
-            <Text style={styles.emptyIcon}>{tabActiva === 'proximas' ? '📅' : '📖'}</Text>
+            <FontAwesome5
+              name={tabActiva === 'proximas' ? 'calendar-plus' : 'history'}
+              size={48}
+              color="#9CA3AF"
+              style={{ marginBottom: 16 }}
+            />
             <Text style={styles.emptyTitle}>
               {tabActiva === 'proximas'
                 ? 'No tienes reservas próximas'

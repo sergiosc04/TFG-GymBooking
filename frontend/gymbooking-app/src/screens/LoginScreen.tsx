@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { FontAwesome5 } from '@expo/vector-icons';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
   KeyboardAvoidingView, Platform, ScrollView, ActivityIndicator, Alert,
@@ -81,7 +82,7 @@ export default function LoginScreen({ navigation }: any) {
               onBlur={() => setPasswordFocused(false)}
             />
             <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-              <Text style={styles.eyeIcon}>{showPassword ? '🙈' : '👁'}</Text>
+              <FontAwesome5 name={showPassword ? 'eye-slash' : 'eye'} size={18} color="#9CA3AF" />
             </TouchableOpacity>
           </View>
 
