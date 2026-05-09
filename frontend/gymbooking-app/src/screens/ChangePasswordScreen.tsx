@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import {
   View, Text, TextInput, StyleSheet, ScrollView,
-  TouchableOpacity, Platform, Alert,
+  TouchableOpacity, Platform, Alert, ActivityIndicator,
 } from 'react-native';
+import { api } from '../services/api';
 
 export default function ChangePasswordScreen({ navigation }: any) {
   const [actual, setActual] = useState('');
   const [nueva, setNueva] = useState('');
   const [confirmar, setConfirmar] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleCambiar = () => {
+  const handleCambiar = async () => {
     if (nueva.length < 6) {
       Platform.OS === 'web' ? window.alert('La contraseña debe tener mínimo 6 caracteres') : Alert.alert('Error', 'La contraseña debe tener mínimo 6 caracteres');
       return;
@@ -18,8 +20,18 @@ export default function ChangePasswordScreen({ navigation }: any) {
       Platform.OS === 'web' ? window.alert('Las contraseñas no coinciden') : Alert.alert('Error', 'Las contraseñas no coinciden');
       return;
     }
-    Platform.OS === 'web' ? window.alert('Contraseña actualizada correctamente') : Alert.alert('Éxito', 'Contraseña actualizada correctamente');
-    navigation.goBack();
+    setLoading(true);
+    try {
+      await api.changePassword(nueva);
+      const msg = 'Contraseña actualizada correctamente';
+      Platform.OS === 'web' ? window.alert(msg) : Alert.alert('Éxito', msg);
+      navigation.goBack();
+    } catch (error: any) {
+      const msg = error.message || 'No se pudo cambiar la contraseña';
+      Platform.OS === 'web' ? window.alert(msg) : Alert.alert('Error', msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -41,8 +53,12 @@ export default function ChangePasswordScreen({ navigation }: any) {
       <Text style={styles.label}>Confirmar nueva contraseña</Text>
       <TextInput style={styles.input} value={confirmar} onChangeText={setConfirmar} secureTextEntry placeholder="Repite la contraseña" placeholderTextColor="#9CA3AF" />
 
-      <TouchableOpacity style={styles.button} onPress={handleCambiar}>
-        <Text style={styles.buttonText}>Cambiar contraseña</Text>
+      <TouchableOpacity style={[styles.button, loading && { opacity: 0.5 }]} onPress={handleCambiar} disabled={loading}>
+        {loading ? (
+          <ActivityIndicator color="#FFFFFF" />
+        ) : (
+          <Text style={styles.buttonText}>Cambiar contraseña</Text>
+        )}
       </TouchableOpacity>
     </ScrollView>
   );

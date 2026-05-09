@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  ActivityIndicator, Alert, Platform,
+  ActivityIndicator, Alert, Platform, Image,
 } from 'react-native';
 import { api } from '../services/api';
-import { Clase } from '../types';
+import { Clase, Reserva } from '../types';
 import CapacityBar from '../components/CapacityBar';
 
 export default function ClassDetailScreen({ route, navigation }: any) {
@@ -13,11 +13,27 @@ export default function ClassDetailScreen({ route, navigation }: any) {
   const [clase, setClase] = useState<Clase | null>(null);
   const [loading, setLoading] = useState(true);
   const [booking, setBooking] = useState(false);
+  const [yaReservadaHoy, setYaReservadaHoy] = useState(false);
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
     cargarClase();
-  }, []);
+    comprobarReservaHoy();
+  }, [claseId]);
+
+  async function comprobarReservaHoy() {
+    const hoy = new Date().toISOString().split('T')[0];
+    try {
+      const reservas = await api.getMyBookings();
+      const existe = (reservas as Reserva[]).some(
+        (r) => r.estado === 'confirmada' && r.clase_id === claseId && r.fecha_reserva === hoy
+      );
+      setYaReservadaHoy(existe);
+    } catch (error) {
+      console.error('Error comprobando reservas:', error);
+      setYaReservadaHoy(false);
+    }
+  }
 
   const cargarClase = async () => {
     try {
@@ -33,6 +49,7 @@ export default function ClassDetailScreen({ route, navigation }: any) {
   };
 
   const handleReservar = async () => {
+  if (yaReservadaHoy) return;
   const hoy = new Date().toISOString().split('T')[0];
 
   if (Platform.OS === 'web') {
@@ -42,6 +59,9 @@ export default function ClassDetailScreen({ route, navigation }: any) {
     setBooking(true);
     try {
       await api.createBooking(claseId, hoy);
+      setYaReservadaHoy(true);
+      comprobarReservaHoy();
+      cargarClase();
       window.alert('✓ Reserva confirmada');
     } catch (error: any) {
       window.alert('Error: ' + (error.message || 'No se pudo reservar'));
@@ -60,6 +80,9 @@ export default function ClassDetailScreen({ route, navigation }: any) {
             setBooking(true);
             try {
               await api.createBooking(claseId, hoy);
+              setYaReservadaHoy(true);
+              comprobarReservaHoy();
+              cargarClase();
               Alert.alert('✓ Reserva confirmada', `Tu plaza en ${clase?.nombre} está reservada.`);
             } catch (error: any) {
               Alert.alert('Error', error.message || 'No se pudo reservar');
@@ -88,12 +111,16 @@ export default function ClassDetailScreen({ route, navigation }: any) {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Cabecera de color */}
+        {/* Cabecera con imagen o color de fondo */}
         <View style={styles.imagenCabecera}>
+          {clase.url_imagen ? (
+            <Image source={{ uri: clase.url_imagen }} style={styles.imagenFondo} />
+          ) : (
+            <Text style={styles.imagenTexto}>{clase.nombre.charAt(0)}</Text>
+          )}
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backText}>←</Text>
           </TouchableOpacity>
-          <Text style={styles.imagenTexto}>{clase.nombre.charAt(0)}</Text>
         </View>
 
         {/* Contenido */}
@@ -124,7 +151,7 @@ export default function ClassDetailScreen({ route, navigation }: any) {
           {/* Aforo */}
           <View style={styles.seccion}>
             <Text style={styles.seccionTitulo}>Aforo</Text>
-            <CapacityBar actual={0} max={clase.capacidad_max} />
+            <CapacityBar actual={(clase as any).reservas_hoy || 0} max={clase.capacidad_max} />
           </View>
 
           {/* Descripción */}
@@ -140,13 +167,15 @@ export default function ClassDetailScreen({ route, navigation }: any) {
       {/* Botón fijo abajo */}
       <View style={[styles.botonContainer, { paddingBottom: Math.max(insets.bottom, 16) }]}>
         <TouchableOpacity
-          style={[styles.botonReservar, booking && { opacity: 0.6 }]}
+          style={[styles.botonReservar, (booking || yaReservadaHoy) && { opacity: 0.6 }]}
           onPress={handleReservar}
-          disabled={booking}
+          disabled={booking || yaReservadaHoy}
           activeOpacity={0.8}
         >
           {booking ? (
             <ActivityIndicator color="#FFFFFF" />
+          ) : yaReservadaHoy ? (
+            <Text style={styles.botonTexto}>Reservado</Text>
           ) : (
             <Text style={styles.botonTexto}>Reservar plaza</Text>
           )}
@@ -175,6 +204,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#1D74F2',
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
+  },
+  imagenFondo: {
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
   },
   backButton: {
     position: 'absolute',

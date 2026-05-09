@@ -124,6 +124,7 @@ export default function HomeScreen({ navigation }: any) {
             <ClassCard
               clase={item}
               onPress={() => navigation.navigate('ClassDetail', { claseId: item.id })}
+              reservasActuales={(item as any).reservas_hoy || 0}
             />
           </View>
         )}

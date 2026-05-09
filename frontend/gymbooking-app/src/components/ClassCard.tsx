@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Clase } from '../types';
 import CapacityBar from './CapacityBar';
 
@@ -21,9 +21,13 @@ export default function ClassCard({ clase, onPress, reservasActuales = 0, yaRese
 
       <View style={styles.content}>
         <View style={styles.topRow}>
-          <View style={styles.imagePlaceholder}>
-            <Text style={styles.imagePlaceholderText}>{clase.nombre.charAt(0)}</Text>
-          </View>
+          {clase.url_imagen ? (
+            <Image source={{ uri: clase.url_imagen }} style={styles.imageThumbnail} />
+          ) : (
+            <View style={styles.imagePlaceholder}>
+              <Text style={styles.imagePlaceholderText}>{clase.nombre.charAt(0)}</Text>
+            </View>
+          )}
 
           <View style={styles.info}>
             <View style={styles.headerRow}>
@@ -91,6 +95,12 @@ const styles = StyleSheet.create({
   },
   topRow: {
     flexDirection: 'row',
+  },
+  imageThumbnail: {
+    width: 64,
+    height: 64,
+    borderRadius: 8,
+    marginRight: 12,
   },
   imagePlaceholder: {
     width: 64,

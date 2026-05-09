@@ -9,6 +9,10 @@ import PersonalDataScreen from '../screens/PersonalDataScreen';
 import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import InfoScreen from '../screens/InfoScreen';
+import AdminHomeScreen from '../screens/AdminHomeScreen';
+import AdminClassesScreen from '../screens/AdminClassesScreen';
+import AdminScheduleScreen from '../screens/AdminScheduleScreen';
+import AdminMembersScreen from '../screens/AdminMembersScreen';
 import { ActivityIndicator, View } from 'react-native';
 
 const RootStack = createNativeStackNavigator();
@@ -25,7 +29,7 @@ export default function AppNavigator() {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer key={isLoggedIn ? 'app' : 'auth'}>
       {isLoggedIn ? (
         <RootStack.Navigator screenOptions={{ headerShown: false }}>
           <RootStack.Screen name="MainTabs" component={MainTabs} />
@@ -34,6 +38,10 @@ export default function AppNavigator() {
           <RootStack.Screen name="ChangePassword" component={ChangePasswordScreen} />
           <RootStack.Screen name="Notifications" component={NotificationsScreen} />
           <RootStack.Screen name="Info" component={InfoScreen} />
+          <RootStack.Screen name="AdminHome" component={AdminHomeScreen} />
+          <RootStack.Screen name="AdminClasses" component={AdminClassesScreen} />
+          <RootStack.Screen name="AdminSchedule" component={AdminScheduleScreen} />
+          <RootStack.Screen name="AdminMembers" component={AdminMembersScreen} />
         </RootStack.Navigator>
       ) : (
         <AuthStack />

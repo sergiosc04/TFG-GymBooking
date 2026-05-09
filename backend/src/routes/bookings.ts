@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import { supabase } from '../supabaseClient';
 import { requireAuth } from '../middleware/auth';
-
 
 const router = Router();
 
-
-// GET /api/bookings — Mis reservas
+// GET /api/bookings
+// Obtiene todas las reservas del usuario autenticado, ordenadas por fecha.
+// Incluye los datos de la clase asociada (join con tabla clases).
 router.get('/', requireAuth, async (req, res) => {
+  const supabase = (req as any).supabase;
   const userId = (req as any).user.id;
 
 
@@ -25,8 +25,11 @@ router.get('/', requireAuth, async (req, res) => {
 });
 
 
-// POST /api/bookings — Crear reserva
+// POST /api/bookings
+// Crea una nueva reserva llamando a la función RPC reservar_clase.
+// La función controla duplicados, capacidad máxima y existencia del perfil/clase.
 router.post('/', requireAuth, async (req, res) => {
+  const supabase = (req as any).supabase;
   const userId = (req as any).user.id;
   const { clase_id, fecha_reserva } = req.body;
 
@@ -48,9 +51,12 @@ router.post('/', requireAuth, async (req, res) => {
 });
 
 
-// PATCH /api/bookings/:id/cancel — Cancelar
+// PATCH /api/bookings/:id/cancel
+// Cancela una reserva del usuario autenticado cambiando su estado a 'cancelada'.
+// Solo puede cancelar sus propias reservas (filtra por perfil_id).
 router.patch('/:id/cancel', requireAuth,
   async (req, res) => {
+    const supabase = (req as any).supabase;
     const { id } = req.params;
     const userId = (req as any).user.id;
 

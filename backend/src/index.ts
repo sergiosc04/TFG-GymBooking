@@ -4,16 +4,18 @@ import dotenv from 'dotenv';
 import authRoutes from './routes/auth';
 import classRoutes from './routes/classes';
 import bookingRoutes from './routes/bookings';
+import adminRoutes from './routes/admin';
 
 dotenv.config();
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/classes', classRoutes);
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
