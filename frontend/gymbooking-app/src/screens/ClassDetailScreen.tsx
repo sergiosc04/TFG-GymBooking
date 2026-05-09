@@ -14,6 +14,7 @@ export default function ClassDetailScreen({ route, navigation }: any) {
   const [loading, setLoading] = useState(true);
   const [booking, setBooking] = useState(false);
   const [yaReservadaHoy, setYaReservadaHoy] = useState(false);
+  const [reservaHoy, setReservaHoy] = useState<Reserva | null>(null);
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
@@ -21,17 +22,20 @@ export default function ClassDetailScreen({ route, navigation }: any) {
     comprobarReservaHoy();
   }, [claseId]);
 
-  async function comprobarReservaHoy() {
+  async function comprobarReservaHoy(): Promise<Reserva | null> {
     const hoy = new Date().toISOString().split('T')[0];
     try {
-      const reservas = await api.getMyBookings();
-      const existe = (reservas as Reserva[]).some(
-        (r) => r.estado === 'confirmada' && r.clase_id === claseId && r.fecha_reserva === hoy
-      );
-      setYaReservadaHoy(existe);
+      const reservas = (await api.getMyBookings()) as Reserva[];
+      const reserva =
+        reservas.find((r) => r.estado === 'confirmada' && r.clase_id === claseId && r.fecha_reserva === hoy) || null;
+      setReservaHoy(reserva);
+      setYaReservadaHoy(!!reserva);
+      return reserva;
     } catch (error) {
       console.error('Error comprobando reservas:', error);
       setYaReservadaHoy(false);
+      setReservaHoy(null);
+      return null;
     }
   }
 
@@ -95,6 +99,68 @@ export default function ClassDetailScreen({ route, navigation }: any) {
     );
   }
 };
+
+  const handleCancelarReserva = async () => {
+    const hoy = new Date().toISOString().split('T')[0];
+
+    const reserva = reservaHoy || (await comprobarReservaHoy());
+    if (!reserva?.id) {
+      if (Platform.OS === 'web') {
+        window.alert('No se encontró una reserva confirmada para cancelar.');
+      } else {
+        Alert.alert('Error', 'No se encontró una reserva confirmada para cancelar.');
+      }
+      return;
+    }
+
+    if (Platform.OS === 'web') {
+      const confirmar = window.confirm(`¿Cancelar tu reserva de ${clase?.nombre} para hoy (${hoy})?`);
+      if (!confirmar) return;
+
+      setBooking(true);
+      try {
+        await api.cancelBooking(reserva.id);
+        setReservaHoy(null);
+        setYaReservadaHoy(false);
+        await comprobarReservaHoy();
+        await cargarClase();
+        window.alert('✓ Reserva cancelada');
+      } catch (error: any) {
+        window.alert('Error: ' + (error.message || 'No se pudo cancelar la reserva'));
+      } finally {
+        setBooking(false);
+      }
+      return;
+    }
+
+    Alert.alert(
+      '¿Cancelar reserva?'
+      ,
+      `¿Seguro que quieres cancelar tu reserva de ${clase?.nombre} para hoy (${hoy})?`,
+      [
+        { text: 'No', style: 'cancel' },
+        {
+          text: 'Sí, cancelar',
+          style: 'destructive',
+          onPress: async () => {
+            setBooking(true);
+            try {
+              await api.cancelBooking(reserva.id);
+              setReservaHoy(null);
+              setYaReservadaHoy(false);
+              await comprobarReservaHoy();
+              await cargarClase();
+              Alert.alert('✓ Reserva cancelada', 'Tu reserva ha sido cancelada.');
+            } catch (error: any) {
+              Alert.alert('Error', error.message || 'No se pudo cancelar la reserva');
+            } finally {
+              setBooking(false);
+            }
+          },
+        },
+      ]
+    );
+  };
 
   if (loading) {
     return (
@@ -167,15 +233,19 @@ export default function ClassDetailScreen({ route, navigation }: any) {
       {/* Botón fijo abajo */}
       <View style={[styles.botonContainer, { paddingBottom: Math.max(insets.bottom, 16) }]}>
         <TouchableOpacity
-          style={[styles.botonReservar, (booking || yaReservadaHoy) && { opacity: 0.6 }]}
-          onPress={handleReservar}
-          disabled={booking || yaReservadaHoy}
+          style={[
+            styles.botonReservar,
+            yaReservadaHoy && styles.botonCancelar,
+            booking && { opacity: 0.6 },
+          ]}
+          onPress={yaReservadaHoy ? handleCancelarReserva : handleReservar}
+          disabled={booking}
           activeOpacity={0.8}
         >
           {booking ? (
             <ActivityIndicator color="#FFFFFF" />
           ) : yaReservadaHoy ? (
-            <Text style={styles.botonTexto}>Reservado</Text>
+            <Text style={styles.botonTexto}>Cancelar reserva</Text>
           ) : (
             <Text style={styles.botonTexto}>Reservar plaza</Text>
           )}
@@ -306,6 +376,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  botonCancelar: {
+    backgroundColor: '#EF4444',
   },
   botonTexto: {
     fontSize: 17,

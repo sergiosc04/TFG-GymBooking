@@ -92,12 +92,6 @@ export default function ProfileScreen({ navigation }: any) {
           <Text style={styles.opcionTexto}>Cambiar contraseña</Text>
           <FontAwesome5 name="chevron-right" size={14} color="#9CA3AF" />
         </TouchableOpacity>
-        <View style={styles.separador} />
-        <TouchableOpacity style={styles.opcion} onPress={() => navigation.navigate('Notifications')}>
-          <FontAwesome5 name="bell" size={18} color="#6B7280" style={styles.opcionIcono} />
-          <Text style={styles.opcionTexto}>Notificaciones</Text>
-          <FontAwesome5 name="chevron-right" size={14} color="#9CA3AF" />
-        </TouchableOpacity>
       </View>
 
       {/* Sección Sobre */}
