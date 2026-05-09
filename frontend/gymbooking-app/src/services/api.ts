@@ -2,7 +2,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
+function normalizeApiBaseUrl(baseUrl: string) {
+  const trimmed = baseUrl.trim().replace(/\/+$/, '');
+  return trimmed.endsWith('/api') ? trimmed : `${trimmed}/api`;
+}
+
 function getApiUrl() {
+  const envUrl = process.env.EXPO_PUBLIC_API_URL;
+  if (envUrl) {
+    return normalizeApiBaseUrl(envUrl);
+  }
+
   if (Platform.OS === 'web') {
     return 'http://localhost:3000/api';
   }

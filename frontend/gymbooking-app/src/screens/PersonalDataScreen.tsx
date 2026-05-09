@@ -3,6 +3,7 @@ import {
   View, Text, TextInput, StyleSheet, ScrollView,
   TouchableOpacity, Platform, Alert, ActivityIndicator,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../hooks/useAuth';
 import { api } from '../services/api';
 
@@ -40,7 +41,7 @@ export default function PersonalDataScreen({ navigation }: any) {
     try {
       await api.updateProfile(nombre.trim(), telefono);
       // Actualizar el nombre en el contexto de auth local
-      const token = await require('@react-native-async-storage/async-storage').default.getItem('token');
+      const token = await AsyncStorage.getItem('token');
       if (token) await login(token, nombre.trim(), userEmail);
       const msg = 'Tus datos se han guardado correctamente.';
       Platform.OS === 'web' ? window.alert(msg) : Alert.alert('Datos actualizados', msg);

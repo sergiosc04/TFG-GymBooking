@@ -49,6 +49,7 @@ const API_KEY: string =
 export const isServiceRoleKeyConfigured =
   !!SUPABASE_SERVICE_ROLE_KEY && decodeJwtRole(SUPABASE_SERVICE_ROLE_KEY) === 'service_role';
 
+
 if (SUPABASE_SERVICE_ROLE_KEY && !isServiceRoleKeyConfigured) {
   const role = decodeJwtRole(SUPABASE_SERVICE_ROLE_KEY);
   console.warn(
