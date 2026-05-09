@@ -1,23 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, StyleSheet, ScrollView,
-  TouchableOpacity, Platform, Alert,
+  TouchableOpacity, Platform, Alert, ActivityIndicator,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from '../hooks/useAuth';
+import { api } from '../services/api';
 
 export default function PersonalDataScreen({ navigation }: any) {
-  const { userName, userEmail } = useAuth();
+  const { userName, userEmail, login } = useAuth();
   const [nombre, setNombre] = useState(userName);
   const [email] = useState(userEmail);
   const [telefono, setTelefono] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [cargando, setCargando] = useState(true);
 
-  const handleGuardar = () => {
-    if (Platform.OS === 'web') {
-      window.alert('Datos actualizados correctamente');
-    } else {
-      Alert.alert('Datos actualizados', 'Tus datos se han guardado correctamente.');
+  useEffect(() => {
+    cargarPerfil();
+  }, []);
+
+  const cargarPerfil = async () => {
+    try {
+      const perfil = await api.getProfile();
+      setNombre(perfil.nombre_completo || userName);
+      setTelefono(perfil.telefono || '');
+    } catch (error) {
+      console.error('Error cargando perfil:', error);
+    } finally {
+      setCargando(false);
     }
-    navigation.goBack();
+  };
+
+  const handleGuardar = async () => {
+    if (nombre.trim().length < 3) {
+      const msg = 'El nombre debe tener al menos 3 caracteres';
+      Platform.OS === 'web' ? window.alert(msg) : Alert.alert('Error', msg);
+      return;
+    }
+    setLoading(true);
+    try {
+      await api.updateProfile(nombre.trim(), telefono);
+      // Actualizar el nombre en el contexto de auth local
+      const token = await AsyncStorage.getItem('token');
+      if (token) await login(token, nombre.trim(), userEmail);
+      const msg = 'Tus datos se han guardado correctamente.';
+      Platform.OS === 'web' ? window.alert(msg) : Alert.alert('Datos actualizados', msg);
+      navigation.goBack();
+    } catch (error: any) {
+      const msg = error.message || 'No se pudieron guardar los datos';
+      Platform.OS === 'web' ? window.alert(msg) : Alert.alert('Error', msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -48,8 +82,12 @@ export default function PersonalDataScreen({ navigation }: any) {
         maxLength={9}
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleGuardar}>
-        <Text style={styles.buttonText}>Guardar cambios</Text>
+      <TouchableOpacity style={[styles.button, loading && { opacity: 0.5 }]} onPress={handleGuardar} disabled={loading}>
+        {loading ? (
+          <ActivityIndicator color="#FFFFFF" />
+        ) : (
+          <Text style={styles.buttonText}>Guardar cambios</Text>
+        )}
       </TouchableOpacity>
     </ScrollView>
   );

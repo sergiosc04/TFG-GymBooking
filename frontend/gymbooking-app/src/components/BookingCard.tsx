@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Platform } from 'react-native';
 import { Reserva } from '../types';
 
 interface BookingCardProps {
@@ -20,6 +20,14 @@ export default function BookingCard({ reserva, onCancel, onPress, esFutura }: Bo
   const sala = reserva.clases?.sala || '';
 
   const handleCancel = () => {
+    if (Platform.OS === 'web') {
+      const confirmar = typeof window !== 'undefined' && window.confirm(
+        `¿Seguro que quieres cancelar tu reserva de ${nombreClase}?`
+      );
+      if (confirmar) onCancel?.(reserva.id);
+      return;
+    }
+
     Alert.alert(
       '¿Cancelar reserva?',
       `¿Seguro que quieres cancelar tu reserva de ${nombreClase}?`,
@@ -74,7 +82,12 @@ export default function BookingCard({ reserva, onCancel, onPress, esFutura }: Bo
           <View style={styles.acciones}>
             <Text style={styles.verDetalles}>Ver detalles →</Text>
             <Text style={styles.separador}> · </Text>
-            <TouchableOpacity onPress={handleCancel}>
+            <TouchableOpacity
+              onPress={(e) => {
+                (e as any)?.stopPropagation?.();
+                handleCancel();
+              }}
+            >
               <Text style={styles.cancelar}>Cancelar</Text>
             </TouchableOpacity>
           </View>

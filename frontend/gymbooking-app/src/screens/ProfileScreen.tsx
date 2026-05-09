@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesome5 } from '@expo/vector-icons';
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert,
+  View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, Platform,
 } from 'react-native';
 import { useAuth } from '../hooks/useAuth';
 import { api } from '../services/api';
 import { Reserva } from '../types';
 
 export default function ProfileScreen({ navigation }: any) {
-  const { userName, userEmail, logout } = useAuth();
+  const { userName, userEmail, userRole, logout } = useAuth();
   const [totalReservas, setTotalReservas] = useState(0);
 
   useEffect(() => {
@@ -25,13 +25,21 @@ export default function ProfileScreen({ navigation }: any) {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    if (Platform.OS === 'web') {
+      const confirmar = typeof window !== 'undefined' && window.confirm('¿Seguro que quieres cerrar sesión?');
+      if (confirmar) {
+        await logout();
+      }
+      return;
+    }
+
     Alert.alert(
       '¿Cerrar sesión?',
       '¿Seguro que quieres cerrar sesión?',
       [
         { text: 'Cancelar', style: 'cancel' },
-        { text: 'Cerrar sesión', style: 'destructive', onPress: logout },
+        { text: 'Cerrar sesión', style: 'destructive', onPress: () => logout() },
       ]
     );
   };
@@ -84,12 +92,6 @@ export default function ProfileScreen({ navigation }: any) {
           <Text style={styles.opcionTexto}>Cambiar contraseña</Text>
           <FontAwesome5 name="chevron-right" size={14} color="#9CA3AF" />
         </TouchableOpacity>
-        <View style={styles.separador} />
-        <TouchableOpacity style={styles.opcion} onPress={() => navigation.navigate('Notifications')}>
-          <FontAwesome5 name="bell" size={18} color="#6B7280" style={styles.opcionIcono} />
-          <Text style={styles.opcionTexto}>Notificaciones</Text>
-          <FontAwesome5 name="chevron-right" size={14} color="#9CA3AF" />
-        </TouchableOpacity>
       </View>
 
       {/* Sección Sobre */}
@@ -118,6 +120,20 @@ export default function ProfileScreen({ navigation }: any) {
           <Text style={styles.opcionTexto}>Versión 1.0</Text>
         </View>
       </View>
+
+      {/* Panel admin (solo visible si rol = admin) */}
+      {userRole === 'admin' && (
+        <>
+          <Text style={styles.seccionTitulo}>ADMINISTRACIÓN</Text>
+          <View style={styles.opcionesContainer}>
+            <TouchableOpacity style={styles.opcion} onPress={() => navigation.navigate('AdminHome')}>
+              <FontAwesome5 name="cogs" size={18} color="#1D74F2" style={styles.opcionIcono} />
+              <Text style={[styles.opcionTexto, { color: '#1D74F2', fontWeight: '600' }]}>Panel admin</Text>
+              <FontAwesome5 name="chevron-right" size={14} color="#1D74F2" />
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
 
       {/* Botón cerrar sesión */}
       <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>

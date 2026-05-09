@@ -25,7 +25,15 @@ export default function LoginScreen({ navigation }: any) {
       const response = await api.login(email.trim(), password);
       const token = response.session.access_token;
       const name = response.user.user_metadata?.nombre_completo || email.split('@')[0];
-      await login(token, name, email.trim());
+      // Obtener el rol del perfil desde el backend (fallback a 'socio' si falla)
+      let rol = 'socio';
+      try {
+        const perfil = await api.getProfile();
+        rol = perfil.rol || 'socio';
+      } catch {
+        console.warn('No se pudo obtener el perfil, usando rol por defecto');
+      }
+      await login(token, name, email.trim(), rol);
     } catch (error: any) {
       Alert.alert('Error', error.message || 'Credenciales incorrectas');
     } finally {

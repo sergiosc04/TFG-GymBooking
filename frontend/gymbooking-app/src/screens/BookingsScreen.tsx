@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { FontAwesome5 } from '@expo/vector-icons';
 import {
   View, Text, StyleSheet, FlatList, TouchableOpacity,
-  ActivityIndicator, RefreshControl, Alert,
+  ActivityIndicator, RefreshControl, Alert, Platform,
 } from 'react-native';
 import { api } from '../services/api';
 import { Reserva } from '../types';
@@ -38,10 +38,19 @@ export default function BookingsScreen({ navigation }: any) {
   const handleCancelar = async (reservaId: string) => {
     try {
       await api.cancelBooking(reservaId);
-      Alert.alert('Reserva cancelada', 'Tu reserva ha sido cancelada.');
+      if (Platform.OS === 'web') {
+        window.alert('Reserva cancelada\n\nTu reserva ha sido cancelada.');
+      } else {
+        Alert.alert('Reserva cancelada', 'Tu reserva ha sido cancelada.');
+      }
       cargarReservas();
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'No se pudo cancelar');
+      const msg = error.message || 'No se pudo cancelar';
+      if (Platform.OS === 'web') {
+        window.alert('Error: ' + msg);
+      } else {
+        Alert.alert('Error', msg);
+      }
     }
   };
 
