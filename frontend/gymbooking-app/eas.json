@@ -12,6 +12,9 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://tfg-gymbooking-production-0d75.up.railway.app"
       }
     },
     "production": {
