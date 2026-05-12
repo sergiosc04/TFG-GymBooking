@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "GymBooking",
+    "slug": "gymbooking-app",
+    "version": "1.0.0",
+    "assetBundlePatterns": ["**/*"],
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
+    ],
+    "android": {
+      "package": "com.example.gymbooking"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8719e26a-a952-48ed-84b9-663e435d5fcf"
+      }
+    }
+  }
+}
