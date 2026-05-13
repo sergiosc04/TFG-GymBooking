@@ -4,11 +4,11 @@
                  "slug":  "gymbooking-app",
                  "version":  "1.0.0",
                  "orientation":  "portrait",
-                 "icon":  "./assets/icon.png",
+                 "icon":  "./assets/gymbooking.png",
                  "userInterfaceStyle":  "light",
                  "newArchEnabled":  true,
                  "splash":  {
-                                "image":  "./assets/splash-icon.png",
+                                "image":  "./assets/splash-gymbooking.png",
                                 "resizeMode":  "contain",
                                 "backgroundColor":  "#ffffff"
                             },
@@ -17,7 +17,7 @@
                          },
                  "android":  {
                                  "adaptiveIcon":  {
-                                                      "foregroundImage":  "./assets/adaptive-icon.png",
+                                                      "foregroundImage":  "./assets/adaptive-gymbooking.png",
                                                       "backgroundColor":  "#ffffff"
                                                   },
                                  "edgeToEdgeEnabled":  true,
@@ -25,7 +25,7 @@
                                  "package":  "com.example.gymbooking"
                              },
                  "web":  {
-                             "favicon":  "./assets/favicon.png"
+                             "favicon":  "./assets/favgymbooking.png"
                          },
                  "extra":  {
                                "eas":  {
