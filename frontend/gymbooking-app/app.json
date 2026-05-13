@@ -17,7 +17,7 @@
                          },
                  "android":  {
                                  "adaptiveIcon":  {
-                                                      "foregroundImage":  "./assets/gymbooking.png.png",
+                                                      "foregroundImage":  "./assets/gymbooking.png",
                                                       "backgroundColor":  "#ffffff"
                                                   },
                                  "edgeToEdgeEnabled":  true,
