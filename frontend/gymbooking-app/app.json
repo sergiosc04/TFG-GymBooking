@@ -1,37 +1,37 @@
 {
-    "expo":  {
-                 "name":  "gymbooking-app",
-                 "slug":  "gymbooking-app",
-                 "version":  "1.0.0",
-                 "orientation":  "portrait",
-                 "icon":  "./assets/gymbooking.png",
-                 "userInterfaceStyle":  "light",
-                 "newArchEnabled":  true,
-                 "splash":  {
-                                "image":  "./assets/splash-gymbooking.png",
-                                "resizeMode":  "contain",
-                                "backgroundColor":  "#ffffff"
-                            },
-                 "ios":  {
-                             "supportsTablet":  true
-                         },
-                 "android":  {
-                                 "adaptiveIcon":  {
-                                                      "foregroundImage":  "./assets/gymbooking.png",
-                                                      "backgroundColor":  "#ffffff"
-                                                  },
-                                 "edgeToEdgeEnabled":  true,
-                                 "predictiveBackGestureEnabled":  false,
-                                 "package":  "com.example.gymbooking"
-                             },
-                 "web":  {
-                             "favicon":  "./assets/favgymbooking.png"
-                         },
-                 "extra":  {
-                               "eas":  {
-                                           "projectId":  "d2333d04-ac8a-434c-8bd0-2fed9d437982"
-                                       }
-                           },
-                 "owner":  "uve11"
-             }
+  "expo": {
+    "name": "gymbooking-app",
+    "slug": "gymbooking-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/gymbooking.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/gymbooking.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/gymbooking.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "com.example.gymbooking"
+    },
+    "web": {
+      "favicon": "./assets/gymbooking.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d2333d04-ac8a-434c-8bd0-2fed9d437982"
+      }
+    },
+    "owner": "uve11"
+  }
 }
