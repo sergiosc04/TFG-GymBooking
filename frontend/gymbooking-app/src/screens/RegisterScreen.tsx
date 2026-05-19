@@ -76,7 +76,7 @@ export default function RegisterScreen({ navigation }: any) {
           <Text style={styles.label}>Nombre completo</Text>
           <TextInput
             style={styles.input}
-            placeholder="Ej: Sergio Serrano"
+            placeholder="Introduce tu nombre completo"
             placeholderTextColor="#9CA3AF"
             value={nombreCompleto}
             onChangeText={setNombreCompleto}
